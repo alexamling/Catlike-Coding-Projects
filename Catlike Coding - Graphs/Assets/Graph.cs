@@ -20,6 +20,7 @@ public class Graph : MonoBehaviour {
             position.y = position.x * position.x;
             point.localPosition = position;
             point.localScale = scale;
+            point.SetParent(transform);
         }
     }
 	
