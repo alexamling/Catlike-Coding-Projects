@@ -2,16 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public delegate float GraphFunction(float x, float y);
+public enum GraphFunctionName { Sine, MultiSine }
+
 public class Graph : MonoBehaviour {
 
     public Transform pointPrefab;
 
     [Range(10,100)]
     public int resolution = 10;
-    [Range(0, 1)]
-    public int function;
+    public GraphFunctionName function;
 
     Transform[] points;
+    static GraphFunction[] functions = {
+        SineFunction, MultiSineFunction
+    };
 
 	void Start () {
         points = new Transform[resolution];
@@ -37,25 +42,23 @@ public class Graph : MonoBehaviour {
 
 	void Update () {
         float t = Time.time * 2;
+        GraphFunction f = functions[(int)function];
         for (int i = 0; i < points.Length; i++)
-        {
-            Transform point = points[i];
-            Vector3 position = point.localPosition;
-            if (function == 0)
-                position.y = SineFunction(position.x, t);
-            else
-                position.y = MultiSineFunction(position.x, t);
-            point.localPosition = position;
-        }
+            {
+                Transform point = points[i];
+                Vector3 position = point.localPosition;
+                position.y = f(position.x, t);
+                point.localPosition = position;
+            }
 		
 	}
 
-    float SineFunction (float x, float t)
+    static float SineFunction (float x, float t)
     {
         return Mathf.Sin(Mathf.PI * x + t);
     }
 
-    float MultiSineFunction(float x, float t)
+    static float MultiSineFunction(float x, float t)
     {
         float y = Mathf.Sin(Mathf.PI * x + t);
         y += Mathf.Sin(2f * Mathf.PI * x + 2f * t) / 2f;
