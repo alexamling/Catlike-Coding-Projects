@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public delegate float GraphFunction(float x, float z, float t);
-public enum GraphFunctionName { Sine, Sine2D, MultiSine }
+public enum GraphFunctionName { Sine, Sine2D, Sine2D_Alt, MultiSine }
 
 public class Graph : MonoBehaviour {
 
@@ -15,7 +15,7 @@ public class Graph : MonoBehaviour {
 
     Transform[] points;
     static GraphFunction[] functions = {
-        SineFunction, Sine2DFunction, MultiSineFunction
+        SineFunction, Sine2DFunction, Alt2DFunction, MultiSineFunction
     };
 
 	void Start () {
@@ -75,5 +75,13 @@ public class Graph : MonoBehaviour {
     static float Sine2DFunction (float x, float z, float t)
     {
         return Mathf.Sin(pi * (x + z + t));
+    }
+
+    static float Alt2DFunction (float x, float z, float t)
+    {
+        float y = Mathf.Sin(pi * (x + t));
+        y += Mathf.Sin(pi * (z + t));
+        y *= .5f;
+        return y;
     }
 }
