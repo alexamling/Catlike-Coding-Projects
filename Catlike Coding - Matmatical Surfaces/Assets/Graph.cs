@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public delegate Vector3 GraphFunction(float u, float v, float t);
-public enum GraphFunctionName { Sine, Sine2D, Sine2D_Alt, MultiSine, Multi2DSine, Ripple, Cylinder, Cylinder_Alt, Sphere }
+public enum GraphFunctionName { Sine, Sine2D, Sine2D_Alt, MultiSine, Multi2DSine, Ripple, Cylinder, Cylinder_Alt, Sphere, Sphere_Alt, Torus, Torus_Alt }
 
 public class Graph : MonoBehaviour {
 
@@ -15,7 +15,7 @@ public class Graph : MonoBehaviour {
 
     Transform[] points;
     static GraphFunction[] functions = {
-        SineFunction, Sine2DFunction, Alt2DFunction, MultiSineFunction, Multi2DFunction, Ripple, Cylinder, Cylinder_Alt, Sphere
+        SineFunction, Sine2DFunction, Alt2DFunction, MultiSineFunction, Multi2DFunction, Ripple, Cylinder, Cylinder_Alt, Sphere, Sphere_Alt, Torus, Torus_Alt
     };
 
 	void Start () {
@@ -142,8 +142,44 @@ public class Graph : MonoBehaviour {
         Vector3 p;
         float r = Mathf.Cos(pi * .5f * v);
         p.x = r * Mathf.Sin(pi * u);
-        p.y = v;
+        p.y = Mathf.Sin(pi * .5f * v);
         p.z = r * Mathf.Cos(pi * u);
+        return p;
+    }
+
+    static Vector3 Sphere_Alt(float u, float v, float t)
+    {
+        Vector3 p;
+        float r = 0.8f + Mathf.Sin(pi * (6f * u + 2f * v + t)) * .2f;
+        r += Mathf.Sin(pi * (4f * v + t)) * .1f;
+        float s = r * Mathf.Cos(pi * .5f * v);
+        p.x = s * Mathf.Sin(pi * u);
+        p.y = r * Mathf.Sin(pi * .5f * v);
+        p.z = s * Mathf.Cos(pi * u);
+        return p;
+    }
+
+    static Vector3 Torus(float u, float v, float t)
+    {
+        Vector3 p;
+        float r1 = 1f;
+        float r2 = .5f;
+        float s = r2 * Mathf.Cos(pi * v) + r1;
+        p.x = s * Mathf.Sin(pi * u);
+        p.y = r2 * Mathf.Sin(pi * v);
+        p.z = s * Mathf.Cos(pi * u);
+        return p;
+    }
+
+    static Vector3 Torus_Alt(float u, float v, float t)
+    {
+        Vector3 p;
+        float r1 = .65f + Mathf.Sin(pi * (8f * u + 2f * v + t)) * .1f;
+        float r2 = .2f + Mathf.Sin(pi * (6f * u + 2f * v + t)) * .05f;
+        float s = r2 * Mathf.Cos(pi * v) + r1;
+        p.x = s * Mathf.Sin(pi * u);
+        p.y = r2 * Mathf.Sin(pi * v);
+        p.z = s * Mathf.Cos(pi * u);
         return p;
     }
 }
