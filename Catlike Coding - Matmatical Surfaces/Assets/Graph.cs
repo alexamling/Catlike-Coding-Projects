@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public delegate float GraphFunction(float x, float z, float t);
+public delegate Vector3 GraphFunction(float u, float v, float t);
 public enum GraphFunctionName { Sine, Sine2D, Sine2D_Alt, MultiSine, Multi2DSine, Ripple }
 
 public class Graph : MonoBehaviour {
@@ -25,20 +25,13 @@ public class Graph : MonoBehaviour {
         Vector3 scale = Vector3.one * step;
         Vector3 position;
         position.y = 0f;
+        position.z = 0f;
 
-        for (int i = 0, z = 0; z < resolution; z++){
-            position.z = (z + .5f) * step - 1f;
-            for (int x = 0; x < resolution; x++, i++)
-            {
-                Transform point = Instantiate(pointPrefab);
-                points[i] = point;
-
-                position.x = (x + .5f) * step - 1f;
-                point.localPosition = position;
-                point.localScale = scale;
-                point.SetParent(transform);
-
-            }
+        for (int i = 0; i < points.Length; i++){
+            Transform point = Instantiate(pointPrefab);
+            points[i] = point;
+            point.localScale = scale;
+            point.SetParent(transform, false);
         }
     }
 	
@@ -46,59 +39,81 @@ public class Graph : MonoBehaviour {
 	void Update () {
         float t = Time.time;
         GraphFunction f = functions[(int)function];
-        for (int i = 0; i < points.Length; i++)
+        float step = 2f / resolution;
+        for (int i = 0, z = 0; z < resolution; z++)
+        {
+            float v = (z + .5f) * step - 1f;
+            for (int x = 0; x < resolution; x++, i++)
             {
-                Transform point = points[i];
-                Vector3 position = point.localPosition;
-                position.y = f(position.x, position.z, t);
-                point.localPosition = position;
+                float u = (x + 0.5f) * step - 1f;
+                points[i].localPosition = f(u, v, t);
             }
-		
+        }
 	}
 
 
     const float pi = Mathf.PI;
 
-    static float SineFunction (float x, float z, float t)
+    static Vector3 SineFunction (float x, float z, float t)
     {
-        return Mathf.Sin(pi * x + t * 2);
+        Vector3 v;
+        v.x = x;
+        v.y = Mathf.Sin(pi * (x + t));
+        v.z = z;
+        return v;
     }
 
-    static float MultiSineFunction(float x, float z, float t)
+    static Vector3 MultiSineFunction(float x, float z, float t)
     {
-        float y = Mathf.Sin(pi * x + t);
-        y += Mathf.Sin(2f * pi * x + 2f * t * 2) / 2f;
-        y *= 2f / 3f;
-        return y;
+        Vector3 v;
+        v.x = x;
+        v.y = Mathf.Sin(pi * x + t);
+        v.y += Mathf.Sin(2f * pi * x + 2f * t * 2) / 2f;
+        v.y *= 2f / 3f;
+        v.z = z;
+        return v;
     }
 
-    static float Sine2DFunction (float x, float z, float t)
+    static Vector3 Sine2DFunction (float x, float z, float t)
     {
-        return Mathf.Sin(pi * (x + z + t));
+        Vector3 v;
+        v.x = x;
+        v.y = Mathf.Sin(pi * (x + z + t));
+        v.z = z;
+        return v;
     }
 
-    static float Alt2DFunction (float x, float z, float t)
+    static Vector3 Alt2DFunction (float x, float z, float t)
     {
-        float y = Mathf.Sin(pi * (x + t));
-        y += Mathf.Sin(pi * (z + t));
-        y *= .5f;
-        return y;
+        Vector3 v;
+        v.x = x;
+        v.y = Mathf.Sin(pi * (x + t));
+        v.y += Mathf.Sin(pi * (z + t));
+        v.y *= .5f;
+        v.z = z;
+        return v;
     }
 
-    static float Multi2DFunction (float x, float z, float t)
+    static Vector3 Multi2DFunction (float x, float z, float t)
     {
-        float y = 4.0f * Mathf.Sin(pi * (x + z + t * .5f));
-        y += Mathf.Sin(pi * (x + t));
-        y += Mathf.Sin(pi * 2.0f * (z + 2.0f + t)) * .5f;
-        y *= 1.0f / 5.5f;
-        return y;
+        Vector3 v;
+        v.x = x;
+        v.y = 4.0f * Mathf.Sin(pi * (x + z + t * .5f));
+        v.y += Mathf.Sin(pi * (x + t));
+        v.y += Mathf.Sin(pi * 2.0f * (z + 2.0f + t)) * .5f;
+        v.y *= 1.0f / 5.5f;
+        v.z = z;
+        return v;
     }
 
-    static float Ripple (float x, float z, float t)
+    static Vector3 Ripple (float x, float z, float t)
     {
+        Vector3 v;
+        v.x = x;
         float d = Mathf.Sqrt(x * x + z * z);
-        float y = Mathf.Sin(pi * (4.0f * d - t));
-        y /= 1f + 10f * d;
-        return y;
+        v.y = Mathf.Sin(pi * (4.0f * d - t));
+        v.y /= 1f + 10f * d;
+        v.z = z;
+        return v;
     }
 }
