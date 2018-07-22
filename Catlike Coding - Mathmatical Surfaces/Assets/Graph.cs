@@ -178,7 +178,7 @@ public class Graph : MonoBehaviour {
         float r2 = .2f + Mathf.Sin(pi * (6f * u + 2f * v + t)) * .05f;
         float s = r2 * Mathf.Cos(pi * v) + r1;
         p.x = s * Mathf.Sin(pi * u);
-        p.y = r2 * Mathf.Sin(pi * v) * Mathf.Sin(2 * pi * v);
+        p.y = r2 * Mathf.Sin(pi * v);
         p.z = s * Mathf.Cos(pi * u);
         return p;
     }
