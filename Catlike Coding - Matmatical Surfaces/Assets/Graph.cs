@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public delegate Vector3 GraphFunction(float u, float v, float t);
-public enum GraphFunctionName { Sine, Sine2D, Sine2D_Alt, MultiSine, Multi2DSine, Ripple }
+public enum GraphFunctionName { Sine, Sine2D, Sine2D_Alt, MultiSine, Multi2DSine, Ripple, Cylinder, Cylinder_Alt, Sphere }
 
 public class Graph : MonoBehaviour {
 
@@ -15,7 +15,7 @@ public class Graph : MonoBehaviour {
 
     Transform[] points;
     static GraphFunction[] functions = {
-        SineFunction, Sine2DFunction, Alt2DFunction, MultiSineFunction, Multi2DFunction, Ripple
+        SineFunction, Sine2DFunction, Alt2DFunction, MultiSineFunction, Multi2DFunction, Ripple, Cylinder, Cylinder_Alt, Sphere
     };
 
 	void Start () {
@@ -54,66 +54,96 @@ public class Graph : MonoBehaviour {
 
     const float pi = Mathf.PI;
 
-    static Vector3 SineFunction (float x, float z, float t)
+    static Vector3 SineFunction (float u, float v, float t)
     {
-        Vector3 v;
-        v.x = x;
-        v.y = Mathf.Sin(pi * (x + t));
-        v.z = z;
-        return v;
+        Vector3 p;
+        p.x = u;
+        p.y = Mathf.Sin(pi * (u + t));
+        p.z = v;
+        return p;
     }
 
-    static Vector3 MultiSineFunction(float x, float z, float t)
+    static Vector3 MultiSineFunction(float u, float v, float t)
     {
-        Vector3 v;
-        v.x = x;
-        v.y = Mathf.Sin(pi * x + t);
-        v.y += Mathf.Sin(2f * pi * x + 2f * t * 2) / 2f;
-        v.y *= 2f / 3f;
-        v.z = z;
-        return v;
+        Vector3 p;
+        p.x = u;
+        p.y = Mathf.Sin(pi * u + t);
+        p.y += Mathf.Sin(2f * pi * u + 2f * t * 2) / 2f;
+        p.y *= 2f / 3f;
+        p.z = v;
+        return p;
     }
 
-    static Vector3 Sine2DFunction (float x, float z, float t)
+    static Vector3 Sine2DFunction (float u, float v, float t)
     {
-        Vector3 v;
-        v.x = x;
-        v.y = Mathf.Sin(pi * (x + z + t));
-        v.z = z;
-        return v;
+        Vector3 p;
+        p.x = u;
+        p.y = Mathf.Sin(pi * (u + v + t));
+        p.z = v;
+        return p;
     }
 
-    static Vector3 Alt2DFunction (float x, float z, float t)
+    static Vector3 Alt2DFunction (float u, float v, float t)
     {
-        Vector3 v;
-        v.x = x;
-        v.y = Mathf.Sin(pi * (x + t));
-        v.y += Mathf.Sin(pi * (z + t));
-        v.y *= .5f;
-        v.z = z;
-        return v;
+        Vector3 p;
+        p.x = u;
+        p.y = Mathf.Sin(pi * (u + t));
+        p.y += Mathf.Sin(pi * (v + t));
+        p.y *= .5f;
+        p.z = v;
+        return p;
     }
 
-    static Vector3 Multi2DFunction (float x, float z, float t)
+    static Vector3 Multi2DFunction (float u, float v, float t)
     {
-        Vector3 v;
-        v.x = x;
-        v.y = 4.0f * Mathf.Sin(pi * (x + z + t * .5f));
-        v.y += Mathf.Sin(pi * (x + t));
-        v.y += Mathf.Sin(pi * 2.0f * (z + 2.0f + t)) * .5f;
-        v.y *= 1.0f / 5.5f;
-        v.z = z;
-        return v;
+        Vector3 p;
+        p.x = u;
+        p.y = 4.0f * Mathf.Sin(pi * (u + v + t * .5f));
+        p.y += Mathf.Sin(pi * (u + t));
+        p.y += Mathf.Sin(pi * 2.0f * (v + 2.0f + t)) * .5f;
+        p.y *= 1.0f / 5.5f;
+        p.z = v;
+        return p;
     }
 
-    static Vector3 Ripple (float x, float z, float t)
+    static Vector3 Ripple (float u, float v, float t)
     {
-        Vector3 v;
-        v.x = x;
-        float d = Mathf.Sqrt(x * x + z * z);
-        v.y = Mathf.Sin(pi * (4.0f * d - t));
-        v.y /= 1f + 10f * d;
-        v.z = z;
-        return v;
+        Vector3 p;
+        p.x = u;
+        float d = Mathf.Sqrt(u * u + v * v);
+        p.y = Mathf.Sin(pi * (4.0f * d - t));
+        p.y /= 1f + 10f * d;
+        p.z = v;
+        return p;
+    }
+
+    static Vector3 Cylinder (float u, float v, float t)
+    {
+        Vector3 p;
+        float r = 1f;
+        p.x = r * Mathf.Sin(pi * u);
+        p.y = v;
+        p.z = r * Mathf.Cos(pi * u);
+        return p;
+    }
+
+    static Vector3 Cylinder_Alt(float u, float v, float t)
+    {
+        Vector3 p;
+        float r = 0.8f + Mathf.Sin(pi * (6f * u + 2f * v + t)) * .2f;
+        p.x = r * Mathf.Sin(pi * u);
+        p.y = v;
+        p.z = r * Mathf.Cos(pi * u);
+        return p;
+    }
+
+    static Vector3 Sphere(float u, float v, float t)
+    {
+        Vector3 p;
+        float r = Mathf.Cos(pi * .5f * v);
+        p.x = r * Mathf.Sin(pi * u);
+        p.y = v;
+        p.z = r * Mathf.Cos(pi * u);
+        return p;
     }
 }
