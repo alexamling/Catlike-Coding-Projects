@@ -1,8 +1,19 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+
 [RequireComponent(typeof(FPSCounter))]
 public class FPSDisplay : MonoBehaviour {
+
+    [System.Serializable]
+    private struct FPSColor
+    {
+        public Color color;
+        public int minimumFPS;
+    }
+
+    [SerializeField]
+    private FPSColor[] coloring;
 
     public Text MaxFPSLabel, AverageFPSLabel, MinFPSLabel;
 
@@ -28,8 +39,21 @@ public class FPSDisplay : MonoBehaviour {
 
 	void Update ()
     {
-        MaxFPSLabel.text = stringsFrom00To99[Mathf.Clamp(fpsCounter.MaxFPS, 0, 99)];
-        AverageFPSLabel.text = stringsFrom00To99[Mathf.Clamp(fpsCounter.AverageFPS, 0, 99)];
-        MinFPSLabel.text = stringsFrom00To99[Mathf.Clamp(fpsCounter.MinFPS, 0, 99)];
+        Display(MaxFPSLabel, fpsCounter.MaxFPS);
+        Display(AverageFPSLabel, fpsCounter.AverageFPS);
+        Display(MinFPSLabel, fpsCounter.MinFPS);
+    }
+
+    void Display(Text label, int fps)
+    {
+        label.text = stringsFrom00To99[Mathf.Clamp(fps, 0, 99)];
+        for(int i = 0; i < coloring.Length; i++)
+        {
+            if (fps>= coloring[i].minimumFPS)
+            {
+                label.color = coloring[i].color;
+                break;
+            }
+        }
     }
 }

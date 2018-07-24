@@ -766,6 +766,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3569d5ca6d1df204fbf229248a7242a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  coloring:
+  - color: {r: 0.5294118, g: 0.9221095, b: 1, a: 1}
+    minimumFPS: 60
+  - color: {r: 0.33088237, g: 1, b: 0.47393507, a: 1}
+    minimumFPS: 45
+  - color: {r: 1, g: 0.92697775, b: 0.33823532, a: 1}
+    minimumFPS: 30
+  - color: {r: 1, g: 0.60598373, b: 0.18382353, a: 1}
+    minimumFPS: 15
+  - color: {r: 1, g: 0.27205884, b: 0.27205884, a: 1}
+    minimumFPS: 0
   MaxFPSLabel: {fileID: 1154904685}
   AverageFPSLabel: {fileID: 75542348}
   MinFPSLabel: {fileID: 793706521}
