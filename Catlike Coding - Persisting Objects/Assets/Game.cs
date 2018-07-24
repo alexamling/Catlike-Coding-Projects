@@ -7,16 +7,20 @@ public class Game : MonoBehaviour {
     public Transform prefab;
 
     public KeyCode createKey = KeyCode.C;
-
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
+    public KeyCode newGameKey = KeyCode.N;
+    
 	void Update () {
         if (Input.GetKeyDown(createKey))
         {
-            Instantiate(prefab);
+            CreateObject();
         }
 	}
+
+    void CreateObject()
+    {
+        Transform t = Instantiate(prefab);
+        t.localPosition = Random.insideUnitSphere * 5f;
+        t.rotation = Random.rotation;
+        t.localScale = Vector3.one * Random.Range(.1f, 1f);
+    }
 }
